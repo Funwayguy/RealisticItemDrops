@@ -46,12 +46,18 @@ public class RenderItemLoot extends Render<EntityItemLoot>
             float f = 0.25F;
             float f1 = shouldBob() ? MathHelper.sin(((float)itemIn.getAge() + p_177077_8_) / 10.0F + itemIn.hoverStart) * 0.1F + 0.1F : 0;
             float f2 = p_177077_9_.getItemCameraTransforms().getTransform(ItemCameraTransforms.TransformType.GROUND).scale.y;
-            //GlStateManager.translate((float)p_177077_2_, (float)p_177077_4_ + f1 + 0.25F * f2, (float)p_177077_6_);
-            GlStateManager.translate((float)p_177077_2_, (float)p_177077_4_, (float)p_177077_6_);
+            
+            if(RID_Settings.oldItems)
+            {
+            	GlStateManager.translate((float)p_177077_2_, (float)p_177077_4_ + f1 + 0.25F * f2, (float)p_177077_6_);
+            } else
+            {
+            	GlStateManager.translate((float)p_177077_2_, (float)p_177077_4_, (float)p_177077_6_);
+            }
 
             if (flag || this.renderManager.options != null)
             {
-            	if(RID_Settings.oldItems)
+            	if(RID_Settings.oldItems || !itemIn.onGround)
             	{
             		float f3 = (((float)itemIn.getAge() + p_177077_8_) / 20.0F + itemIn.hoverStart) * (180F / (float)Math.PI);
                 	GlStateManager.rotate(f3, 0F, 1F, 0F);
@@ -223,7 +229,7 @@ public class RenderItemLoot extends Render<EntityItemLoot>
      */
     public boolean shouldBob()
     {
-        return false;
+        return RID_Settings.oldItems;
     }
     /*==================================== FORGE END =============================================*/
 }

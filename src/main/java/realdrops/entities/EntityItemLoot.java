@@ -10,6 +10,8 @@ import net.minecraft.world.World;
 
 public class EntityItemLoot extends EntityItem
 {
+	EntityItem orig = null;
+	
 	public EntityItemLoot(World world)
 	{
 		super(world);
@@ -20,11 +22,13 @@ public class EntityItemLoot extends EntityItem
 	{
 		this(orig.worldObj, orig.posX, orig.posY, orig.posZ, orig.getEntityItem());
 		
+		this.orig = orig;
+		
 		NBTTagCompound oldT = new NBTTagCompound();
 		orig.writeEntityToNBT(oldT);
 		this.readEntityFromNBT(oldT);
 		
-		String thrower = this.getThrower();
+		String thrower = orig.getThrower();
 		Entity entity = thrower == null? null : orig.worldObj.getPlayerEntityByName(thrower);
 		double tossSpd = entity != null && entity.isSprinting()? 2D : 1D;
 		
@@ -39,9 +43,22 @@ public class EntityItemLoot extends EntityItem
 	}
 	
 	@Override
+	public void onUpdate()
+	{
+		if(!this.worldObj.isRemote && orig != null && orig.getAge() >= this.getEntityItem().getItem().getEntityLifespan(getEntityItem(), worldObj) - 1)
+		{
+			// The original item was set to despawn! ABORT EXISTENCE
+			this.setDead();
+			return;
+		}
+		
+		super.onUpdate();
+	}
+	
+	@Override
 	public float getCollisionBorderSize()
 	{
-		return 0.25F; // Helps with manual pickup
+		return onGround? 0.1F : 0.5F; // Helps with manual pickup
 	}
 	
 	public EntityItemLoot(World world, double x, double y, double z, ItemStack stack)

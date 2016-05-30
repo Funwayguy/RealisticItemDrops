@@ -81,11 +81,18 @@ public class EventHandler
 		
 		if(event.getEntity().getClass() == EntityItem.class)
 		{
-			event.setCanceled(true);
-			EntityItemLoot loot = new EntityItemLoot((EntityItem)event.getEntity());
-			event.getWorld().spawnEntityInWorld(loot);
-			event.getEntity().setDead();
-			return;
+			EntityItem item = (EntityItem)event.getEntity();
+			
+			if(item.getEntityItem().stackSize > 0)
+			{
+				event.setResult(Result.DENY);
+				event.setCanceled(true);
+				EntityItemLoot loot = new EntityItemLoot((EntityItem)event.getEntity());
+				event.getEntity().setDead();
+				((EntityItem)event.getEntity()).setInfinitePickupDelay();
+				event.getWorld().spawnEntityInWorld(loot);
+				return;
+			}
 		}
 	}
 	
