@@ -1,0 +1,16 @@
+[
+{
+  "modid": "realdrops",
+  "name": "Realistic Item Drops",
+  "description": "Renders 3D items flat on the ground and disables auto-pickup",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["Funwayguy"],
+  "credits": "SGCBarbierian",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]
