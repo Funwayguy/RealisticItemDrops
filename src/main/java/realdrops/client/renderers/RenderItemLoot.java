@@ -57,10 +57,10 @@ public class RenderItemLoot extends Render<EntityItemLoot>
 
             if (flag || this.renderManager.options != null)
             {
-            	if(RID_Settings.oldItems || !itemIn.onGround)
+            	if(RID_Settings.oldItems || !(itemIn.onGround || itemIn.isInWater()))
             	{
             		float f3 = (((float)itemIn.getAge() + p_177077_8_) / 20.0F + itemIn.hoverStart) * (180F / (float)Math.PI);
-                	GlStateManager.rotate(f3, 0F, 1F, 0F);
+                	GlStateManager.rotate(RID_Settings.oldItems? f3 : itemIn.hoverStart * 360F, 0F, 1F, 0F);
             	} else
             	{
             		GlStateManager.translate(0F, 0.05F, 0F);

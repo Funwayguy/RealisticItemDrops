@@ -1,12 +1,16 @@
 package realdrops.entities;
 
-import realdrops.core.RID_Settings;
+import java.lang.reflect.Field;
+import net.minecraft.block.BlockLiquid;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
+import realdrops.core.RID_Settings;
 
 public class EntityItemLoot extends EntityItem
 {
@@ -42,10 +46,51 @@ public class EntityItemLoot extends EntityItem
 		}
 	}
 	
+	Field fAge;
+	
 	@Override
 	public void onUpdate()
 	{
-		if(!this.worldObj.isRemote && orig != null && orig.getAge() >= this.getEntityItem().getItem().getEntityLifespan(getEntityItem(), worldObj) - 1)
+		if(fAge == null)
+		{
+			try
+			{
+				fAge = EntityItem.class.getDeclaredField("field_70292_b");
+				fAge.setAccessible(true);
+			} catch(Exception e1)
+			{
+				try
+				{
+					fAge = EntityItem.class.getDeclaredField("age");
+					fAge.setAccessible(true);
+				} catch(Exception e2)
+				{
+					System.out.println("Unabled to obtain field");
+					super.onUpdate();
+					return;
+				}
+			}
+		}
+		
+		int age = 0;
+		int oAge = 0;
+		
+		try
+		{
+			age = fAge.getInt(this);
+			
+			if(orig != null)
+			{
+				oAge = fAge.getInt(orig);
+			}
+		} catch(Exception e)
+		{
+			System.out.println("Unabled to access field");
+			super.onUpdate();
+			return;
+		}
+		
+		if(age == 1 && !this.worldObj.isRemote && orig != null && oAge >= this.getEntityItem().getItem().getEntityLifespan(getEntityItem(), worldObj) - 1)
 		{
 			// The original item was set to despawn! ABORT EXISTENCE
 			this.setDead();
@@ -53,12 +98,23 @@ public class EntityItemLoot extends EntityItem
 		}
 		
 		super.onUpdate();
+		
+		if (RID_Settings.canFloat && this.worldObj.getBlockState(new BlockPos(this)).getBlock() instanceof BlockLiquid)
+        {
+			if(this.motionY < 0.05D && this.posY%1D < 0.9F)
+			{
+				this.motionY += Math.min(0.05D, 0.05D - this.motionY);
+			}
+			
+			this.motionX = MathHelper.clamp_double(this.motionX, -0.05D, 0.05D);
+			this.motionZ = MathHelper.clamp_double(this.motionZ, -0.05D, 0.05D);
+        }
 	}
 	
 	@Override
 	public float getCollisionBorderSize()
 	{
-		return onGround? 0.1F : 0.5F; // Helps with manual pickup
+		return MathHelper.clamp_float(RID_Settings.radius * (onGround? 1F : 2F), 0.01F, 1F); // Helps with pickup accuracy
 	}
 	
 	public EntityItemLoot(World world, double x, double y, double z, ItemStack stack)
