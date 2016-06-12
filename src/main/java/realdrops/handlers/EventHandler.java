@@ -19,9 +19,9 @@ public class EventHandler
 	public void onPlayerClickEmpty(PlayerInteractEvent.RightClickEmpty event)
 	{
 		RayTraceResult mop = AuxUtilities.RayCastEntity(event.getEntityPlayer(), RID_Settings.reach);
-		Entity entity = mop.entityHit;
+		Entity entity = mop == null? null: mop.entityHit;
 		
-		if(entity instanceof EntityItemLoot)
+		if(entity != null && entity instanceof EntityItemLoot)
 		{
 			if(!event.getWorld().isRemote)
 			{
@@ -37,9 +37,9 @@ public class EventHandler
 	public void onPlayerClickBlock(PlayerInteractEvent.RightClickBlock event)
 	{
 		RayTraceResult mop = AuxUtilities.RayCastEntity(event.getEntityPlayer(), RID_Settings.reach);
-		Entity entity = mop.entityHit;
+		Entity entity = mop == null? null: mop.entityHit;
 		
-		if(entity instanceof EntityItemLoot)
+		if(entity != null && entity instanceof EntityItemLoot)
 		{
 			if(!event.getWorld().isRemote)
 			{
@@ -56,9 +56,9 @@ public class EventHandler
 	public void onPlayerClickItem(PlayerInteractEvent.RightClickItem event)
 	{
 		RayTraceResult mop = AuxUtilities.RayCastEntity(event.getEntityPlayer(), RID_Settings.reach);
-		Entity entity = mop.entityHit;
+		Entity entity = mop == null? null: mop.entityHit;
 		
-		if(entity instanceof EntityItemLoot)
+		if(entity != null && entity instanceof EntityItemLoot)
 		{
 			if(!event.getWorld().isRemote)
 			{
