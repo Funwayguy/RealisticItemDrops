@@ -50,7 +50,7 @@ public class AuxUtilities
             AxisAlignedBB axisalignedbb = entity.getEntityBoundingBox().expand((double)f2, (double)f2, (double)f2);
             RayTraceResult movingobjectposition = axisalignedbb.calculateIntercept(vec3, vec32);
             
-            if (axisalignedbb.isVecInside(vec3))
+            if (movingobjectposition != null && axisalignedbb.isVecInside(vec3))
             {
                 if (0.0D < d2 || d2 == 0.0D)
                 {
