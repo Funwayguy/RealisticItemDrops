@@ -3,6 +3,8 @@ package realdrops.client.renderers;
 import java.util.Random;
 import realdrops.core.RID_Settings;
 import realdrops.entities.EntityItemLoot;
+import net.minecraft.block.BlockLiquid;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.RenderItem;
@@ -15,7 +17,9 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraftforge.fluids.IFluidBlock;
 
 public class RenderItemLoot extends Render<EntityItemLoot>
 {
@@ -43,9 +47,9 @@ public class RenderItemLoot extends Render<EntityItemLoot>
         {
             boolean flag = p_177077_9_.isGui3d();
             int i = this.getModelCount(itemstack);
-            float f = 0.25F;
             float f1 = shouldBob() ? MathHelper.sin(((float)itemIn.getAge() + p_177077_8_) / 10.0F + itemIn.hoverStart) * 0.1F + 0.1F : 0;
-            float f2 = p_177077_9_.getItemCameraTransforms().getTransform(ItemCameraTransforms.TransformType.GROUND).scale.y;
+            @SuppressWarnings("deprecation")
+			float f2 = p_177077_9_.getItemCameraTransforms().getTransform(ItemCameraTransforms.TransformType.GROUND).scale.y;
             
             if(RID_Settings.oldItems)
             {
@@ -57,7 +61,10 @@ public class RenderItemLoot extends Render<EntityItemLoot>
 
             if (flag || this.renderManager.options != null)
             {
-            	if(RID_Settings.oldItems || !(itemIn.onGround || itemIn.isInWater()))
+            	IBlockState bsDown = itemIn.worldObj.getBlockState(new BlockPos(itemIn.posX, itemIn.posY - 0.25D, itemIn.posZ));
+            	boolean inWater = itemIn.isInWater() || bsDown.getBlock() instanceof BlockLiquid || bsDown.getBlock() instanceof IFluidBlock;
+            	
+            	if(RID_Settings.oldItems || !(itemIn.onGround || inWater))
             	{
             		float f3 = (((float)itemIn.getAge() + p_177077_8_) / 20.0F + itemIn.hoverStart) * (180F / (float)Math.PI);
                 	GlStateManager.rotate(RID_Settings.oldItems? f3 : itemIn.hoverStart * 360F, 0F, 1F, 0F);

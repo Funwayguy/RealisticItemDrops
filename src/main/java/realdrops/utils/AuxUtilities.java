@@ -24,7 +24,7 @@ public class AuxUtilities
         Vec3d vec3 = new Vec3d(src.posX, src.posY, src.posZ);
         vec3 = vec3.addVector(0D, src.getEyeHeight(), 0D);
         Vec3d vec32 = vec3.addVector(vec31.xCoord * dist, vec31.yCoord * dist, vec31.zCoord * dist);
-        mop = src.worldObj.rayTraceBlocks(vec3.addVector(0D, 0D, 0D), vec32, false, true, false);
+        mop = src.worldObj.rayTraceBlocks(vec3.addVector(0D, 0D, 0D), vec32, false, true, true);
         
         if (mop != null)
         {
