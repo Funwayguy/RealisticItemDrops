@@ -2,6 +2,7 @@ package realdrops.entities;
 
 import java.lang.reflect.Field;
 import net.minecraft.block.BlockLiquid;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -10,6 +11,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
+import net.minecraftforge.fluids.IFluidBlock;
 import realdrops.core.RID_Settings;
 
 public class EntityItemLoot extends EntityItem
@@ -99,11 +101,24 @@ public class EntityItemLoot extends EntityItem
 		
 		super.onUpdate();
 		
-		if (RID_Settings.canFloat && this.worldObj.getBlockState(new BlockPos(this)).getBlock() instanceof BlockLiquid)
+		int x = MathHelper.floor_double(posX);
+		int y = MathHelper.floor_double(posY);
+		int z = MathHelper.floor_double(posZ);
+		
+		IBlockState bsHere = this.worldObj.getBlockState(new BlockPos(x, y, z));
+		IBlockState bsAbove = this.worldObj.getBlockState(new BlockPos(x, y + 1, z));
+		
+		boolean liqHere = bsHere.getBlock() instanceof BlockLiquid || bsHere.getBlock() instanceof IFluidBlock;
+		boolean liqAbove = bsAbove.getBlock() instanceof BlockLiquid || bsAbove.getBlock() instanceof IFluidBlock;
+		
+		if(RID_Settings.canFloat && liqHere)
         {
-			if(this.motionY < 0.05D && this.posY%1D < 0.9F)
+			this.onGround = false;
+			this.inWater = true;
+			
+			if(this.motionY < 0.05D && (liqAbove || this.posY%1D < 0.9F))
 			{
-				this.motionY += Math.min(0.05D, 0.05D - this.motionY);
+				this.motionY += Math.min(0.075D, 0.075D - this.motionY);
 			}
 			
 			this.motionX = MathHelper.clamp_double(this.motionX, -0.05D, 0.05D);
