@@ -26,7 +26,7 @@ public class EntityItemLoot extends EntityItem
 	
 	public EntityItemLoot(EntityItem orig)
 	{
-		this(orig.worldObj, orig.posX, orig.posY, orig.posZ, orig.getEntityItem());
+		this(orig.world, orig.posX, orig.posY, orig.posZ, orig.getEntityItem());
 		
 		this.orig = orig;
 		
@@ -35,7 +35,7 @@ public class EntityItemLoot extends EntityItem
 		this.readEntityFromNBT(oldT);
 		
 		String thrower = orig.getThrower();
-		Entity entity = thrower == null? null : orig.worldObj.getPlayerEntityByName(thrower);
+		Entity entity = thrower == null? null : orig.world.getPlayerEntityByName(thrower);
 		double tossSpd = entity != null && entity.isSprinting()? 2D : 1D;
 		
 		this.motionX = orig.motionX * tossSpd;
@@ -92,7 +92,7 @@ public class EntityItemLoot extends EntityItem
 			return;
 		}
 		
-		if(age == 1 && !this.worldObj.isRemote && orig != null && oAge >= this.getEntityItem().getItem().getEntityLifespan(getEntityItem(), worldObj) - 1)
+		if(age == 1 && !this.world.isRemote && orig != null && oAge >= this.getEntityItem().getItem().getEntityLifespan(getEntityItem(), world) - 1)
 		{
 			// The original item was set to despawn! ABORT EXISTENCE
 			this.setDead();
@@ -101,12 +101,12 @@ public class EntityItemLoot extends EntityItem
 		
 		super.onUpdate();
 		
-		int x = MathHelper.floor_double(posX);
-		int y = MathHelper.floor_double(posY);
-		int z = MathHelper.floor_double(posZ);
+		int x = MathHelper.floor(posX);
+		int y = MathHelper.floor(posY);
+		int z = MathHelper.floor(posZ);
 		
-		IBlockState bsHere = this.worldObj.getBlockState(new BlockPos(x, y, z));
-		IBlockState bsAbove = this.worldObj.getBlockState(new BlockPos(x, y + 1, z));
+		IBlockState bsHere = this.world.getBlockState(new BlockPos(x, y, z));
+		IBlockState bsAbove = this.world.getBlockState(new BlockPos(x, y + 1, z));
 		
 		boolean liqHere = bsHere.getBlock() instanceof BlockLiquid || bsHere.getBlock() instanceof IFluidBlock;
 		boolean liqAbove = bsAbove.getBlock() instanceof BlockLiquid || bsAbove.getBlock() instanceof IFluidBlock;
@@ -121,15 +121,15 @@ public class EntityItemLoot extends EntityItem
 				this.motionY += Math.min(0.075D, 0.075D - this.motionY);
 			}
 			
-			this.motionX = MathHelper.clamp_double(this.motionX, -0.05D, 0.05D);
-			this.motionZ = MathHelper.clamp_double(this.motionZ, -0.05D, 0.05D);
+			this.motionX = MathHelper.clamp(this.motionX, -0.05D, 0.05D);
+			this.motionZ = MathHelper.clamp(this.motionZ, -0.05D, 0.05D);
         }
 	}
 	
 	@Override
 	public float getCollisionBorderSize()
 	{
-		return MathHelper.clamp_float(RID_Settings.radius * (onGround? 1F : 2F), 0.01F, 1F); // Helps with pickup accuracy
+		return MathHelper.clamp(RID_Settings.radius * (onGround? 1F : 2F), 0.01F, 1F); // Helps with pickup accuracy
 	}
 	
 	public EntityItemLoot(World world, double x, double y, double z, ItemStack stack)
@@ -152,6 +152,11 @@ public class EntityItemLoot extends EntityItem
     
     public void pickup(EntityPlayer player)
     {
+    	if(this.isDead || player.world.isRemote)
+    	{
+    		return;
+    	}
+    	
     	super.onCollideWithPlayer(player);
     }
 }

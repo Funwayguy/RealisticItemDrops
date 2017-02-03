@@ -61,7 +61,7 @@ public class RenderItemLoot extends Render<EntityItemLoot>
 
             if (flag || this.renderManager.options != null)
             {
-            	IBlockState bsDown = itemIn.worldObj.getBlockState(new BlockPos(itemIn.posX, itemIn.posY - 0.25D, itemIn.posZ));
+            	IBlockState bsDown = itemIn.world.getBlockState(new BlockPos(itemIn.posX, itemIn.posY - 0.25D, itemIn.posZ));
             	boolean inWater = itemIn.isInWater() || bsDown.getBlock() instanceof BlockLiquid || bsDown.getBlock() instanceof IFluidBlock;
             	
             	if(RID_Settings.oldItems || !(itemIn.onGround || inWater))
@@ -85,19 +85,19 @@ public class RenderItemLoot extends Render<EntityItemLoot>
     {
         int i = 1;
 
-        if (stack.stackSize > 48)
+        if (stack.getCount() > 48)
         {
             i = 5;
         }
-        else if (stack.stackSize > 32)
+        else if (stack.getCount() > 32)
         {
             i = 4;
         }
-        else if (stack.stackSize > 16)
+        else if (stack.getCount() > 16)
         {
             i = 3;
         }
-        else if (stack.stackSize > 1)
+        else if (stack.getCount() > 1)
         {
             i = 2;
         }
@@ -138,7 +138,7 @@ public class RenderItemLoot extends Render<EntityItemLoot>
         RenderHelper.enableStandardItemLighting();
         GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
         GlStateManager.pushMatrix();
-        IBakedModel ibakedmodel = this.itemRenderer.getItemModelWithOverrides(itemstack, entity.worldObj, (EntityLivingBase)null);
+        IBakedModel ibakedmodel = this.itemRenderer.getItemModelWithOverrides(itemstack, entity.world, (EntityLivingBase)null);
         int j = this.transformModelCount(entity, x, y, z, partialTicks, ibakedmodel);
         boolean flag1 = ibakedmodel.isGui3d();
 

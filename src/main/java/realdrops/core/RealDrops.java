@@ -25,7 +25,7 @@ import realdrops.handlers.ConfigHandler;
 public class RealDrops
 {
     public static final String MODID = "realdrops";
-    public static final String VERSION = "RID_VER_KEY";
+    public static final String VERSION = "1.1.8";
     public static final String NAME = "Realistic Item Drops";
     public static final String PROXY = "realdrops.core.proxies";
     public static final String CHANNEL = "RID_CHAN";
@@ -48,7 +48,7 @@ public class RealDrops
     	ConfigHandler.initConfigs();
     	
     	proxy.registerHandlers();
-    	EntityRegistry.registerModEntity(EntityItemLoot.class, "item_loot", 0, this, 64, 1, true);
+    	EntityRegistry.registerModEntity(new ResourceLocation(MODID, "item_loot"), EntityItemLoot.class, "item_loot", 0, this, 64, 1, true);
     	proxy.registerRenderers();
     }
     

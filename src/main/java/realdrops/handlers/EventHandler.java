@@ -18,6 +18,11 @@ public class EventHandler
 	@SubscribeEvent
 	public void onPlayerClickEmpty(PlayerInteractEvent.RightClickEmpty event)
 	{
+		if(event.getWorld().isRemote)
+		{
+			return;
+		}
+		
 		RayTraceResult mop = AuxUtilities.RayCastEntity(event.getEntityPlayer(), RID_Settings.reach);
 		Entity entity = mop == null? null: mop.entityHit;
 		
@@ -36,6 +41,11 @@ public class EventHandler
 	@SubscribeEvent
 	public void onPlayerClickBlock(PlayerInteractEvent.RightClickBlock event)
 	{
+		if(event.getWorld().isRemote)
+		{
+			return;
+		}
+		
 		RayTraceResult mop = AuxUtilities.RayCastEntity(event.getEntityPlayer(), RID_Settings.reach);
 		Entity entity = mop == null? null: mop.entityHit;
 		
@@ -55,6 +65,11 @@ public class EventHandler
 	@SubscribeEvent
 	public void onPlayerClickItem(PlayerInteractEvent.RightClickItem event)
 	{
+		if(event.getWorld().isRemote)
+		{
+			return;
+		}
+		
 		RayTraceResult mop = AuxUtilities.RayCastEntity(event.getEntityPlayer(), RID_Settings.reach);
 		Entity entity = mop == null? null: mop.entityHit;
 		
@@ -83,14 +98,14 @@ public class EventHandler
 		{
 			EntityItem item = (EntityItem)event.getEntity();
 			
-			if(item.getEntityItem().stackSize > 0)
+			if(!item.getEntityItem().isEmpty())
 			{
 				event.setResult(Result.DENY);
 				event.setCanceled(true);
 				EntityItemLoot loot = new EntityItemLoot((EntityItem)event.getEntity());
 				event.getEntity().setDead();
 				((EntityItem)event.getEntity()).setInfinitePickupDelay();
-				event.getWorld().spawnEntityInWorld(loot);
+				event.getWorld().spawnEntity(loot);
 				return;
 			}
 		}
