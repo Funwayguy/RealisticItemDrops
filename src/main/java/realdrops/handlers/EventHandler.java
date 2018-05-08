@@ -98,8 +98,12 @@ public class EventHandler
 			
 			if(!item.getItem().isEmpty())
 			{
-				event.setResult(Result.DENY);
-				event.setCanceled(true);
+				if(!RID_Settings.dupeWorkaround)
+				{
+					event.setResult(Result.DENY);
+					event.setCanceled(true);
+				}
+				
 				EntityItemLoot loot = new EntityItemLoot((EntityItem)event.getEntity());
 				event.getEntity().setDead();
 				((EntityItem)event.getEntity()).setItem(ItemStack.EMPTY);
