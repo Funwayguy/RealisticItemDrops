@@ -92,7 +92,7 @@ public class EventHandler
 			return;
 		}
 		
-		if(event.getEntity().getClass() == EntityItem.class)
+		if(event.getEntity().getClass() == EntityItem.class && !event.getEntity().isDead)
 		{
 			EntityItem item = (EntityItem)event.getEntity();
 			
@@ -102,10 +102,11 @@ public class EventHandler
 				{
 					event.setResult(Result.DENY);
 					event.setCanceled(true);
+					event.getEntity().setDead();
 				}
 				
 				EntityItemLoot loot = new EntityItemLoot((EntityItem)event.getEntity());
-				event.getEntity().setDead();
+				
 				((EntityItem)event.getEntity()).setItem(ItemStack.EMPTY);
 				((EntityItem)event.getEntity()).setInfinitePickupDelay();
 				event.getWorld().spawnEntity(loot);
