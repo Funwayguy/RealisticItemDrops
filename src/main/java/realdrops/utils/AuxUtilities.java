@@ -23,7 +23,7 @@ public class AuxUtilities
         double d1 = dist;
         Vec3d vec3 = new Vec3d(src.posX, src.posY, src.posZ);
         vec3 = vec3.addVector(0D, src.getEyeHeight(), 0D);
-        Vec3d vec32 = vec3.addVector(vec31.xCoord * dist, vec31.yCoord * dist, vec31.zCoord * dist);
+        Vec3d vec32 = vec3.addVector(vec31.x * dist, vec31.y * dist, vec31.z * dist);
         mop = src.world.rayTraceBlocks(vec3.addVector(0D, 0D, 0D), vec32, false, true, true);
         
         if (mop != null)
@@ -34,7 +34,7 @@ public class AuxUtilities
         pointedEntity = null;
         float f1 = 1.0F;
         @SuppressWarnings("rawtypes")
-		List list = src.world.getEntitiesWithinAABBExcludingEntity(src, src.getEntityBoundingBox().addCoord(vec31.xCoord * dist, vec31.yCoord * dist, vec31.zCoord * dist).expand((double)f1, (double)f1, (double)f1));
+		List list = src.world.getEntitiesWithinAABBExcludingEntity(src, src.getEntityBoundingBox().offset(vec31.x * dist, vec31.y * dist, vec31.z * dist).expand((double)f1, (double)f1, (double)f1));
         double d2 = d1 <= 0.1D? 0D : d1;
         
         for (int i = 0; i < list.size(); ++i)
@@ -50,7 +50,7 @@ public class AuxUtilities
             AxisAlignedBB axisalignedbb = entity.getEntityBoundingBox().expand((double)f2, (double)f2, (double)f2);
             RayTraceResult movingobjectposition = axisalignedbb.calculateIntercept(vec3, vec32);
             
-            if (movingobjectposition != null && axisalignedbb.isVecInside(vec3))
+            if (movingobjectposition != null && axisalignedbb.contains(vec3))
             {
                 if (0.0D < d2 || d2 == 0.0D)
                 {

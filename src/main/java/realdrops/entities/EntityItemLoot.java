@@ -13,10 +13,11 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.IFluidBlock;
 import realdrops.core.RID_Settings;
+import realdrops.core.RealDrops;
 
 public class EntityItemLoot extends EntityItem
 {
-	EntityItem orig = null;
+	private EntityItem orig = null;
 	
 	public EntityItemLoot(World world)
 	{
@@ -26,7 +27,7 @@ public class EntityItemLoot extends EntityItem
 	
 	public EntityItemLoot(EntityItem orig)
 	{
-		this(orig.world, orig.posX, orig.posY, orig.posZ, orig.getEntityItem());
+		this(orig.world, orig.posX, orig.posY, orig.posZ, orig.getItem());
 		
 		this.orig = orig;
 		
@@ -35,7 +36,7 @@ public class EntityItemLoot extends EntityItem
 		this.readEntityFromNBT(oldT);
 		
 		String thrower = orig.getThrower();
-		Entity entity = thrower == null? null : orig.world.getPlayerEntityByName(thrower);
+		Entity entity = (thrower == null || thrower.length() == 0)? null : orig.world.getPlayerEntityByName(thrower);
 		double tossSpd = entity != null && entity.isSprinting()? 2D : 1D;
 		
 		this.motionX = orig.motionX * tossSpd;
@@ -48,12 +49,18 @@ public class EntityItemLoot extends EntityItem
 		}
 	}
 	
-	Field fAge;
+	private Field fAge;
+	private boolean failed = false;
+	private boolean checked = false;
 	
 	@Override
 	public void onUpdate()
 	{
-		if(fAge == null)
+		if(failed)
+		{
+			super.onUpdate();
+			return;
+		} else if(fAge == null)
 		{
 			try
 			{
@@ -67,36 +74,43 @@ public class EntityItemLoot extends EntityItem
 					fAge.setAccessible(true);
 				} catch(Exception e2)
 				{
-					System.out.println("Unabled to obtain field");
+					RealDrops.logger.error("Unabled to hook 'age' field in EntityItem.class", e1);
 					super.onUpdate();
+					failed = true;
 					return;
 				}
 			}
 		}
 		
-		int age = 0;
-		int oAge = 0;
-		
-		try
+		if(!checked)
 		{
-			age = fAge.getInt(this);
+			int age;
+			int oAge = 0;
 			
-			if(orig != null)
+			try
 			{
-				oAge = fAge.getInt(orig);
+				age = fAge.getInt(this);
+				
+				if(orig != null)
+				{
+					oAge = fAge.getInt(orig);
+				}
+			} catch(Exception e)
+			{
+				RealDrops.logger.error("Unabled to access 'age' field in EntityItem.class", e);
+				super.onUpdate();
+				failed = true;
+				return;
 			}
-		} catch(Exception e)
-		{
-			System.out.println("Unabled to access field");
-			super.onUpdate();
-			return;
-		}
-		
-		if(age == 1 && !this.world.isRemote && orig != null && oAge >= this.getEntityItem().getItem().getEntityLifespan(getEntityItem(), world) - 1)
-		{
-			// The original item was set to despawn! ABORT EXISTENCE
-			this.setDead();
-			return;
+			
+			if(age == 1 && !this.world.isRemote && orig != null && oAge >= this.getItem().getItem().getEntityLifespan(getItem(), world) - 1)
+			{
+				// The original item was set to despawn! ABORT EXISTENCE
+				this.setDead();
+				return;
+			}
+			
+			checked = true;
 		}
 		
 		super.onUpdate();

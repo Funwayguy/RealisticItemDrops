@@ -36,10 +36,9 @@ public class RenderItemLoot extends Render<EntityItemLoot>
 
     private int transformModelCount(EntityItemLoot itemIn, double p_177077_2_, double p_177077_4_, double p_177077_6_, float p_177077_8_, IBakedModel p_177077_9_)
     {
-        ItemStack itemstack = itemIn.getEntityItem();
-        Item item = itemstack.getItem();
-
-        if (item == null)
+        ItemStack itemstack = itemIn.getItem();
+        
+        if (itemstack.isEmpty())
         {
             return 0;
         }
@@ -111,10 +110,10 @@ public class RenderItemLoot extends Render<EntityItemLoot>
     @Override
     public void doRender(EntityItemLoot entity, double x, double y, double z, float entityYaw, float partialTicks)
     {
-        ItemStack itemstack = entity.getEntityItem();
+        ItemStack itemstack = entity.getItem();
         int i;
 
-        if (itemstack != null && itemstack.getItem() != null)
+        if (!itemstack.isEmpty())
         {
             i = Item.getIdFromItem(itemstack.getItem()) + itemstack.getMetadata();
         }

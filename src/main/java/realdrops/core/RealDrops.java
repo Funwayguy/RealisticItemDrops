@@ -1,8 +1,5 @@
 package realdrops.core;
 
-import net.minecraft.block.Block;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.Mod;
@@ -15,17 +12,15 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 import org.apache.logging.log4j.Logger;
 import realdrops.core.proxies.CommonProxy;
 import realdrops.entities.EntityItemLoot;
 import realdrops.handlers.ConfigHandler;
 
-@Mod(modid = RealDrops.MODID, version = RealDrops.VERSION, name = RealDrops.NAME, guiFactory = "realdrops.handlers.ConfigGuiFactory")
+@Mod(modid = RealDrops.MODID, name = RealDrops.NAME, guiFactory = "realdrops.handlers.ConfigGuiFactory")
 public class RealDrops
 {
     public static final String MODID = "realdrops";
-    public static final String VERSION = "1.1.8";
     public static final String NAME = "Realistic Item Drops";
     public static final String PROXY = "realdrops.core.proxies";
     public static final String CHANNEL = "RID_CHAN";
@@ -60,18 +55,5 @@ public class RealDrops
     @EventHandler
     public void postInit(FMLPostInitializationEvent event)
     {
-    }
-    
-    public void registerBlock(Block b, String name)
-    {
-    	ResourceLocation res = new ResourceLocation(MODID + ":" + name);
-    	GameRegistry.register(b, res);
-        GameRegistry.register(new ItemBlock(b).setRegistryName(res));
-    }
-    
-    public void registerItem(Item i, String name)
-    {
-    	ResourceLocation res = new ResourceLocation(MODID + ":" + name);
-        GameRegistry.register(i.setRegistryName(res));
     }
 }

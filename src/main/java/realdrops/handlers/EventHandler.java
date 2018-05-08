@@ -2,6 +2,7 @@ package realdrops.handlers;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -18,7 +19,7 @@ public class EventHandler
 	@SubscribeEvent
 	public void onPlayerClickEmpty(PlayerInteractEvent.RightClickEmpty event)
 	{
-		if(event.getWorld().isRemote)
+		if(event.getWorld().isRemote || RID_Settings.autoPickup)
 		{
 			return;
 		}
@@ -26,7 +27,7 @@ public class EventHandler
 		RayTraceResult mop = AuxUtilities.RayCastEntity(event.getEntityPlayer(), RID_Settings.reach);
 		Entity entity = mop == null? null: mop.entityHit;
 		
-		if(entity != null && entity instanceof EntityItemLoot)
+		if(entity instanceof EntityItemLoot)
 		{
 			if(!event.getWorld().isRemote)
 			{
@@ -34,14 +35,13 @@ public class EventHandler
 			}
 			
 			event.setResult(Result.DENY);
-			return;
 		}
 	}
 	
 	@SubscribeEvent
 	public void onPlayerClickBlock(PlayerInteractEvent.RightClickBlock event)
 	{
-		if(event.getWorld().isRemote)
+		if(event.getWorld().isRemote || RID_Settings.autoPickup)
 		{
 			return;
 		}
@@ -49,7 +49,7 @@ public class EventHandler
 		RayTraceResult mop = AuxUtilities.RayCastEntity(event.getEntityPlayer(), RID_Settings.reach);
 		Entity entity = mop == null? null: mop.entityHit;
 		
-		if(entity != null && entity instanceof EntityItemLoot)
+		if(entity instanceof EntityItemLoot)
 		{
 			if(!event.getWorld().isRemote)
 			{
@@ -58,14 +58,13 @@ public class EventHandler
 			
 			event.setResult(Result.DENY);
 			event.setCanceled(true);
-			return;
 		}
 	}
 	
 	@SubscribeEvent
 	public void onPlayerClickItem(PlayerInteractEvent.RightClickItem event)
 	{
-		if(event.getWorld().isRemote)
+		if(event.getWorld().isRemote || RID_Settings.autoPickup)
 		{
 			return;
 		}
@@ -73,7 +72,7 @@ public class EventHandler
 		RayTraceResult mop = AuxUtilities.RayCastEntity(event.getEntityPlayer(), RID_Settings.reach);
 		Entity entity = mop == null? null: mop.entityHit;
 		
-		if(entity != null && entity instanceof EntityItemLoot)
+		if(entity instanceof EntityItemLoot)
 		{
 			if(!event.getWorld().isRemote)
 			{
@@ -82,7 +81,6 @@ public class EventHandler
 			
 			event.setResult(Result.DENY);
 			event.setCanceled(true);
-			return;
 		}
 	}
 	
@@ -98,15 +96,15 @@ public class EventHandler
 		{
 			EntityItem item = (EntityItem)event.getEntity();
 			
-			if(!item.getEntityItem().isEmpty())
+			if(!item.getItem().isEmpty())
 			{
 				event.setResult(Result.DENY);
 				event.setCanceled(true);
 				EntityItemLoot loot = new EntityItemLoot((EntityItem)event.getEntity());
 				event.getEntity().setDead();
+				((EntityItem)event.getEntity()).setItem(ItemStack.EMPTY);
 				((EntityItem)event.getEntity()).setInfinitePickupDelay();
 				event.getWorld().spawnEntity(loot);
-				return;
 			}
 		}
 	}

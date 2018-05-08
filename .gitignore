@@ -194,6 +194,7 @@ $RECYCLE.BIN/
 dist/
 build/
 eggs/
+parts/
 var/
 sdist/
 develop-eggs/
@@ -211,3 +212,14 @@ pip-log.txt
 
 #Mr Developer
 .mr.developer.cfg
+
+
+#############
+## IntelliJ
+#############
+
+.gradle/
+.idea/
+jars/
+classes/
+out/
