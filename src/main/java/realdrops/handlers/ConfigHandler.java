@@ -24,7 +24,6 @@ public class ConfigHandler
 		RID_Settings.reach = config.getFloat("Pickup Reach", Configuration.CATEGORY_GENERAL, 2.5F, 1F, 5F, "Manual pickup distance in blocks");
 		RID_Settings.radius = config.getFloat("Pickup Radius", Configuration.CATEGORY_GENERAL, 0.2F, 0.01F, 1F, "Affects pickup accuracy tolerance");
 		RID_Settings.canFloat = config.getBoolean("Can Float", Configuration.CATEGORY_GENERAL, true, "Toggles items floating on water");
-		RID_Settings.dupeWorkaround = config.getBoolean("Dupe Workaround", Configuration.CATEGORY_GENERAL, true, "A workaround for machines that check their drops before subtracting items. Disable if there are noticable side effects");
 		
 		config.save();
 	}
