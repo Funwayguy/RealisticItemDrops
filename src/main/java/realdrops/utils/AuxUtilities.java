@@ -22,9 +22,9 @@ public class AuxUtilities
 		Entity pointedEntity = null;
         double d1 = dist;
         Vec3d vec3 = new Vec3d(src.posX, src.posY, src.posZ);
-        vec3 = vec3.addVector(0D, src.getEyeHeight(), 0D);
-        Vec3d vec32 = vec3.addVector(vec31.x * dist, vec31.y * dist, vec31.z * dist);
-        mop = src.world.rayTraceBlocks(vec3.addVector(0D, 0D, 0D), vec32, false, true, true);
+        vec3 = vec3.add(0D, src.getEyeHeight(), 0D);
+        Vec3d vec32 = vec3.add(vec31.x * dist, vec31.y * dist, vec31.z * dist);
+        mop = src.world.rayTraceBlocks(vec3.add(0D, 0D, 0D), vec32, false, true, true);
         
         if (mop != null)
         {
